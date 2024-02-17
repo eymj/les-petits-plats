@@ -133,7 +133,6 @@ async function displayData(recipes) {
     updateFiltersList(recipes)
 
     if (recipes.length === 0) {
-        console.log("test")
         const _empty_notice = document.createElement("p");
         _empty_notice.textContent = "Aucune recette ne corresponds à votre recherche."
         recipesList.appendChild(_empty_notice);
@@ -169,11 +168,11 @@ async function updateData() {
             for (var i in r1[r].ingredients) {
                 ingredients.push(r1[r].ingredients[i].ingredient.toLowerCase())
             }
-            if (r.name.toLowerCase().includes(k)) {
+            if (r1[r].name.toLowerCase().includes(k)) {
                 r2.push(r1[r])
             } else if (ingredients.includes(k)) {
                 r2.push(r1[r])
-            } else if (r.description.toLowerCase().includes(k)) {
+            } else if (r1[r].description.toLowerCase().includes(k)) {
                 r2.push(r1[r])
             }
          }

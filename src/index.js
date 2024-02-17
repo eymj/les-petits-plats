@@ -8,13 +8,13 @@ form.addEventListener("submit", searchSubmit);
 function getIngredientsList(recipes) {
     const ingredients = []
 
-    recipes.forEach((r) => {
-        r.ingredients.forEach((i) => {
-            if (!ingredients.includes(i.ingredient.toLowerCase())) {
-                ingredients.push(i.ingredient.toLowerCase())
+    for (var r in recipes) {
+        for (var i in recipes[r].ingredients) {
+            if (!ingredients.includes(recipes[r].ingredients[i].ingredient.toLowerCase())) {
+                ingredients.push(recipes[r].ingredients[i].ingredient.toLowerCase())
             }
-        })
-    })
+        }
+    }
 
     return ingredients
 }
@@ -22,13 +22,13 @@ function getIngredientsList(recipes) {
 function getUstensilsList(recipes) {
     const ustensils = []
 
-    recipes.forEach((r) => {
-        r.ustensils.forEach((u) => {
-            if (!ustensils.includes(u.toLowerCase())) {
-                ustensils.push(u.toLowerCase())
+    for (var r in recipes) {
+        for (var u in recipes[r].ustensils) {
+            if (!ustensils.includes(recipes[r].ustensils[u].toLowerCase())) {
+                ustensils.push(recipes[r].ustensils[u].toLowerCase())
             }
-        })
-    })
+        }
+    }
 
     return ustensils
 }
@@ -36,11 +36,11 @@ function getUstensilsList(recipes) {
 function getAppliancesList(recipes) {
     const appliances = []
 
-    recipes.forEach((r) => {
-        if (!appliances.includes(r.appliance.toLowerCase())) {
-            appliances.push(r.appliance.toLowerCase())
+    for (var r in recipes) {
+        if (!appliances.includes(recipes[r].appliance.toLowerCase())) {
+            appliances.push(recipes[r].appliance.toLowerCase())
         }
-    })
+    }
 
     return appliances
 }
@@ -63,38 +63,38 @@ function updateFiltersList(recipes) {
     _appliances_list.innerHTML = ""
     _ustensils_list.innerHTML = ""
 
-    ingredients.forEach((i) => {
+    for (var i in ingredients) {
         const btn = document.createElement("button");
         btn.classList = "dropdown-list-button"
-        btn.textContent = capitalizeFirstLetter(i)
-        if (activeFilters.includes(i)) {
+        btn.textContent = capitalizeFirstLetter(ingredients[i])
+        if (activeFilters.includes(ingredients[i])) {
             btn.classList += " active"
         }
         _ingredients_list.appendChild(btn)
         btn.addEventListener("click", toggleFilter); 
-    })
+    }
 
-    appliances.forEach((a) => {
+    for (var a in appliances) {
         const btn = document.createElement("button");
         btn.classList = "dropdown-list-button"
-        btn.textContent = capitalizeFirstLetter(a)
-        if (activeFilters.includes(a)) {
+        btn.textContent = capitalizeFirstLetter(appliances[a])
+        if (activeFilters.includes(appliances[a])) {
             btn.classList += " active"
         }
         _appliances_list.appendChild(btn)
         btn.addEventListener("click", toggleFilter);
-    })
+    }
 
-    ustensils.forEach((u) => {
+    for (var u in ustensils) {
         const btn = document.createElement("button");
         btn.classList = "dropdown-list-button"
-        btn.textContent = capitalizeFirstLetter(u)
-        if (activeFilters.includes(u)) {
+        btn.textContent = capitalizeFirstLetter(ustensils[u])
+        if (activeFilters.includes(ustensils[u])) {
             btn.classList += " active"
         }
         _ustensils_list.appendChild(btn)
         btn.addEventListener("click", toggleFilter);
-    })
+    }
 
 }
 
@@ -116,12 +116,12 @@ function updateActiveFilters() {
 
     _active_filters.innerHTML = ""
     
-    activeFilters.forEach((f) => {
+    for (var f in activeFilters) {
         const _filter = document.createElement("div");
-        _filter.textContent = capitalizeFirstLetter(f)
+        _filter.textContent = capitalizeFirstLetter(activeFilters[f])
         _filter.classList = "filter"
         _active_filters.appendChild(_filter)
-    })
+    }
 
     updateData();
     
@@ -140,11 +140,12 @@ async function displayData(recipes) {
         return
     }
 
-    recipes.forEach((recipe) => {
-        const recipeModel = recipeTemplate(recipe);
+    for (var recipe in recipes) {
+        const recipeModel = recipeTemplate(recipes[recipe]);
         const recipeCardDOM = recipeModel.getRecipeCardDOM();
         recipesList.appendChild(recipeCardDOM);
-    });
+    }
+
 }
 
 function searchSubmit(event) {
@@ -163,48 +164,47 @@ async function updateData() {
     const r2 = []
 
     if (k.length > 3) {
-        r1.forEach(r => {
+        for (var r in r1) {
             const ingredients = []
-            r.ingredients.forEach(i => {
-                ingredients.push(i.ingredient.toLowerCase())
-            })
-
-            if (r.name.toLowerCase().includes(k)) {
-                r2.push(r)
-            } else if (ingredients.includes(k)) {
-                r2.push(r)
-            } else if (r.description.toLowerCase().includes(k)) {
-                r2.push(r)
+            for (var i in r1[r].ingredients) {
+                ingredients.push(r1[r].ingredients[i].ingredient.toLowerCase())
             }
-        });
+            if (r.name.toLowerCase().includes(k)) {
+                r2.push(r1[r])
+            } else if (ingredients.includes(k)) {
+                r2.push(r1[r])
+            } else if (r.description.toLowerCase().includes(k)) {
+                r2.push(r1[r])
+            }
+         }
     } else {
         r2.push(...r1)
     }
 
     if (activeFilters.length > 0) {
         const filteredRecipes = []
-        r2.forEach(r => {
-
+        for (var r in r2) {
             const filterables = []
-            r.ingredients.forEach(i => {
-                filterables.push(i.ingredient.toLowerCase())
-            })
-            r.ustensils.forEach(u => {
-                filterables.push(u.toLowerCase())
-            })
-            filterables.push(r.appliance.toLowerCase())
+            for (var i in r2[r].ingredients) {
+                filterables.push(r2[r].ingredients[i].ingredient.toLowerCase())
+            }
+            for (var u in r2[r].ustensils) {
+                filterables.push(r2[r].ustensils[u].toLowerCase())
+            }
+            filterables.push(r2[r].appliance.toLowerCase())
 
             let a = 0
-            activeFilters.forEach(f => {
-                if (filterables.includes(f)) {
+            for (var f in activeFilters) {
+                if (filterables.includes(activeFilters[f])) {
                     a += 1
                 }
-            })
+            }
 
             if (a == activeFilters.length) {
-                filteredRecipes.push(r)
+                filteredRecipes.push(r2[r])
             }
-        })
+        }
+
         r2.splice(0, r2.length)
         r2.push(...filteredRecipes)
     }

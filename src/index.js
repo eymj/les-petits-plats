@@ -2,10 +2,18 @@ import getRecipes from "./recipes.js";
 import recipeTemplate from "./templates/recipe.js"
 
 const activeFilters = []
+let recipes = []
 const form = document.getElementById("main-search-form");
 form.addEventListener("submit", searchSubmit);
 
-function getIngredientsList(recipes) {
+const _ingredients_search = document.getElementById("ingredients-search");
+const _appliances_search = document.getElementById("appliances-search");
+const _ustensils_search = document.getElementById("ustensils-search");
+_ingredients_search.addEventListener("input", filterSearchInput);
+_appliances_search.addEventListener("input", filterSearchInput);
+_ustensils_search.addEventListener("input", filterSearchInput);
+
+function getIngredientsList() {
     const ingredients = []
 
     recipes.forEach((r) => {
@@ -19,7 +27,7 @@ function getIngredientsList(recipes) {
     return ingredients
 }
 
-function getUstensilsList(recipes) {
+function getUstensilsList() {
     const ustensils = []
 
     recipes.forEach((r) => {
@@ -33,7 +41,7 @@ function getUstensilsList(recipes) {
     return ustensils
 }
 
-function getAppliancesList(recipes) {
+function getAppliancesList() {
     const appliances = []
 
     recipes.forEach((r) => {
@@ -49,11 +57,11 @@ function capitalizeFirstLetter(string) {
     return string.charAt(0).toUpperCase() + string.slice(1);
 }
 
-function updateFiltersList(recipes) {
+function updateFiltersList() {
 
-    const ingredients = getIngredientsList(recipes)
-    const appliances = getAppliancesList(recipes)
-    const ustensils = getUstensilsList(recipes)
+    const ingredients = getIngredientsList()
+    const appliances = getAppliancesList()
+    const ustensils = getUstensilsList()
 
     const _ingredients_list = document.getElementById("ingredients-list");
     const _appliances_list = document.getElementById("appliances-list");
@@ -64,6 +72,10 @@ function updateFiltersList(recipes) {
     _ustensils_list.innerHTML = ""
 
     ingredients.forEach((i) => {
+        const k = _ingredients_search.value.toLowerCase()
+        if (!i.toLowerCase().includes(k)){
+            return
+        }
         const btn = document.createElement("button");
         btn.classList = "dropdown-list-button"
         btn.textContent = capitalizeFirstLetter(i)
@@ -75,6 +87,10 @@ function updateFiltersList(recipes) {
     })
 
     appliances.forEach((a) => {
+        const k = _appliances_search.value.toLowerCase()
+        if (!a.toLowerCase().includes(k)){
+            return
+        }
         const btn = document.createElement("button");
         btn.classList = "dropdown-list-button"
         btn.textContent = capitalizeFirstLetter(a)
@@ -86,6 +102,10 @@ function updateFiltersList(recipes) {
     })
 
     ustensils.forEach((u) => {
+        const k = _ustensils_search.value.toLowerCase()
+        if (!u.toLowerCase().includes(k)){
+            return
+        }
         const btn = document.createElement("button");
         btn.classList = "dropdown-list-button"
         btn.textContent = capitalizeFirstLetter(u)
@@ -127,7 +147,7 @@ function updateActiveFilters() {
     
 }
 
-async function displayData(recipes) {
+async function displayData() {
     const recipesList = document.querySelector(".recipes-list");
 
     updateFiltersList(recipes)
@@ -150,6 +170,11 @@ async function displayData(recipes) {
 function searchSubmit(event) {
     event.preventDefault();
     updateData()
+}
+
+function filterSearchInput(event) {
+    event.preventDefault();
+    updateFiltersList()
 }
 
 async function updateData() {
@@ -209,7 +234,9 @@ async function updateData() {
         r2.push(...filteredRecipes)
     }
 
-    displayData(r2)
+    recipes = r2
+
+    displayData()
 }
 
 async function init() {
